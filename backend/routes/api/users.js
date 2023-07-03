@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
+const {loginUser} = require('../../config/passport');
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.json({
@@ -30,7 +31,7 @@ route.post('/register', async (req, res, next)=>{
     return next(err);
   }
 
-  // ptherwise create a new user 
+  // otherwise create a new user 
 
   const newUser = new User({
     username: req.body.username,
@@ -44,7 +45,7 @@ route.post('/register', async (req, res, next)=>{
       try {
         newUser.hashedPassword = hashedPassword;
         const user = await newUser.save();
-        return res.json({ user });
+        return res.json(await loginUser(user) );
       }
       catch(err) {
         next(err);
@@ -64,7 +65,7 @@ router.post('/users/login',async(req,res,next)=>{
       err.errors = { email: 'Invalid credentials'};
       return next(err);
     }
-    return res.json({user});
+    return res.json(await loginUser(user));
   })(req,res,next);
 });
 
