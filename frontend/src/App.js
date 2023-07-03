@@ -4,6 +4,12 @@ import MainPage from './components/MainPage/MainPage';
 import LoginForm from './components/SessionForms/LoginForm';
 import SignupForm from './components/SessionForms/SignupForm';
 import { getCurrentUser } from './store/session';
+import {useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import NavBar from './components/NavBar/NavBar';
+import Tweets from './components/Tweets/Tweets';
+import Profile from './components/Profile/Profile';
+import TweetCompose from './components/Tweets/TweetCompose';
 function App() {
   const [loaded,setLoaded] = useState(false);
   const dispatch = useDispatch();

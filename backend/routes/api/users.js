@@ -1,17 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
-const {loginUser} = require('../../config/passport');
-/* GET users listing. */
+const { loginUser, restoreUser } = require('../../config/passport');
+
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
+const { isProduction } = require('../../config/keys');
 router.get('/', function(req, res, next) {
   res.json({
     message: "GET /api/users"
   });
 });
-
-route.post('/register', async (req, res, next)=>{
+router.get('/current', restoreUser, (req, res) => {
+  if (!isProduction) {
+    const csrfToken = req.csrfToken();
+    res.cookie("CSRF-TOKEN", csrfToken);
+  }
+  if (!req.user) return res.json(null);
+  res.json({
+    _id: req.user._id,
+    username: req.user.username,
+    email: req.user.email
+  });
+})
+router.post('/register', async (req, res, next)=>{
   const user = await User.findOne({
     $or: [{ email: req.body.email }, { username: req.body.username }]
   });
