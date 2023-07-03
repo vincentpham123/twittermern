@@ -4,7 +4,7 @@ const router = express.Router();
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.json({
-    message: "GET /users"
+    message: "GET /api/tweets"
   });
 });
 
